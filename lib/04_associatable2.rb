@@ -5,8 +5,8 @@ module Associatable
   # Remember to go back to 04_associatable to write ::assoc_options
 
   def has_one_through(name, through_name, source_name)
-    define_method name do
 
+    define_method name do
       self_table = self.class.to_s.downcase + "s"
       key = self.send(through_options.send(:foreign_key))
 
