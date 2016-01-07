@@ -3,8 +3,14 @@ require 'active_support/inflector'
 require 'byebug'
 
 class SQLObject
+  def self.table_name=(table_name)
+  end
+
+  def self.table_name
+    self.to_s.downcase + "s"
+  end
+
   def self.columns
-    table = self.table_name
     db = DBConnection.execute2("SELECT * FROM " + self.table_name)
 
     col_name_strings = db.first
@@ -30,14 +36,6 @@ class SQLObject
     end
   end
 
-  def self.table_name=(table_name)
-    # ...
-  end
-
-  def self.table_name
-    self.to_s.downcase + "s"
-    # ...
-  end
 
   def self.all
     parse_all(DBConnection.execute("SELECT * FROM " + self.table_name))
@@ -45,10 +43,7 @@ class SQLObject
 
   def self.parse_all(results)
     all_objects = []
-    results.each do |attr_hash|
-      # debugger
-      all_objects << self.new(attr_hash)
-    end
+    results.each { |attr_hash| all_objects << self.new(attr_hash) }
     all_objects
   end
 
@@ -72,11 +67,9 @@ class SQLObject
       end
       send "#{attr_name}=", val
     end
-    # ...
   end
 
   def attributes
-    # ...
   end
 
   def attribute_values
