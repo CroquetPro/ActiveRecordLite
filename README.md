@@ -2,7 +2,7 @@
 
 This is my version of the useful tool for relating objects to a database.
 
-### Active Record (Lite) gives us several mechanisms, the most important being the ability to:
+### Features
 
 * Represent models and their data.
 * Represent associations between these models.
