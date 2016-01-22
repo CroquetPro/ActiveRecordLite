@@ -2,8 +2,7 @@
 
 This is my version of the useful tool for relating objects to a database.
 
-### Active Record (Lite) gives us several mechanisms,
-### the most important being the ability to:
+### Active Record (Lite) gives us several mechanisms, the most important being the ability to:
 
 * Represent models and their data.
 * Represent associations between these models.
@@ -11,7 +10,7 @@ This is my version of the useful tool for relating objects to a database.
 * Avoid having to make SQL statements directly.
 
 One particularly difficult association was **has_one_through** which required
-clear naming in order to keep associations organized:
+clear naming in order to keep each of the associations organized:
 
 ```ruby
 def has_one_through(name, through_name, source_name)
