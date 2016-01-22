@@ -1,27 +1,45 @@
 #Active Record (Lite)
 
-This is my version of the incredibly useful tool for relating to a database.
+This is my version of the useful tool for relating objects to a database.
 
-```
-Active Record is the M in MVC - the model - which is the layer of the system
-responsible for representing business data and logic. Active Record facilitates
-the creation and use of business objects whose data requires persistent storage
-to a database. It is an implementation of the Active Record pattern which
-itself is a description of an Object Relational Mapping system.
-
-Object-Relational Mapping, commonly referred to as its abbreviation ORM, is a
-technique that connects the rich objects of an application to tables in a
-relational database management system. Using ORM, the properties and
-relationships of the objects in an application can be easily stored and
-retrieved from a database without writing SQL statements directly and with
-less overall database access code.
-
--http://guides.rubyonrails.org/active_record_basics.html
-```
-### Active Record gives us several mechanisms, the most important being the ability to:
+### Active Record (Lite) gives us several mechanisms,
+### the most important being the ability to:
 
 * Represent models and their data.
 * Represent associations between these models.
-* Represent inheritance hierarchies through related models.
-* Validate models before they get persisted to the database.
 * Perform database operations in an object-oriented fashion.
+* Avoid having to make SQL statements directly.
+
+One particularly difficult association was **has_one_through** which required
+clear naming in order to keep associations organized:
+
+```ruby
+def has_one_through(name, through_name, source_name)
+
+  define_method name do
+    self_table = self.class.to_s.downcase + "s"
+
+    through_options = self.class.assoc_options[through_name]
+    through_primary_key = through_options.send(:primary_key)
+    through_table = through_name.to_s.downcase + "s"
+
+    key = self.send(through_options.send(:foreign_key))
+
+    source_options = through_options.model_class.assoc_options[source_name]
+    source_foreign_key = source_options.send(:foreign_key)
+    source_primary_key = source_options.send(:primary_key)
+    source_table = source_name.to_s.downcase + "s"
+
+    results = DBConnection.execute(<<-SQL)
+        SELECT #{source_table}.*
+        FROM #{through_table}
+        JOIN #{source_table}
+          ON #{source_foreign_key} = #{source_table}.#{source_primary_key}
+        WHERE #{through_table}.#{through_primary_key} = #{key}
+      SQL
+    source_options.model_class.new(results.first)
+  end
+end
+end
+```
+[Associations](https://github.com/CroquetPro/ActiveRecordLite/blob/master/lib/associatable.rb)
